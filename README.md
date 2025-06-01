@@ -18,7 +18,7 @@
 Скопируйте проект:
 
 bash
-git clone <git@github.com:Kirill21897/predictive_maintenance_project.git>
+git clone <https://github.com/LamzikGG/vkr>
 Установите необходимые компоненты:
 
 bash
