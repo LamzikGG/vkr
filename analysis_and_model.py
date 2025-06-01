@@ -1,3 +1,4 @@
+# analysis_and_model.py
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -18,7 +19,7 @@ def analysis_and_model_page():
         try:
             df = pd.read_csv(uploaded_file)
             
-                        # Удаление ненужных столбцов
+            # Удаление ненужных столбцов
             df = df.drop(columns=['UDI', 'Product ID', 'TWF', 'HDF', 'PWF', 'OSF', 'RNF'], errors='ignore')
 
             # Преобразование категориальной переменной Type
@@ -30,11 +31,8 @@ def analysis_and_model_page():
                 st.warning("Обнаружены пропущенные значения. Они будут удалены.")
                 df = df.dropna()
             
-            #st.write("До очистки колонки:", df.columns.tolist())
-            # Очистка: удаляем все символы '[' и ']'
+            # Очистка названий колонок (удаляем квадратные скобки)
             df.columns = [col.replace('[', '').replace(']', '') for col in df.columns]
-            # Вывод после очистки
-            #st.write("После очистки колонки:", df.columns.tolist())
             
             # Выбор признаков и целевой переменной
             X = df.drop(columns=['Machine failure'])
@@ -43,7 +41,7 @@ def analysis_and_model_page():
             # Масштабирование числовых признаков
             scaler = StandardScaler()
             numerical_cols = ['Air temperature K', 'Process temperature K',
-                              'Rotational speed rpm', 'Torque Nm', 'Tool wear min']
+                            'Rotational speed rpm', 'Torque Nm', 'Tool wear min']
             X[numerical_cols] = scaler.fit_transform(X[numerical_cols])
 
             # Разделение на обучающую и тестовую выборки
@@ -53,7 +51,7 @@ def analysis_and_model_page():
 
             # Выбор модели
             model_choice = st.selectbox("Выберите модель машинного обучения",
-                                        ["Логистическая регрессия", "Случайный лес", "XGBoost"])
+                                    ["Логистическая регрессия", "Случайный лес", "XGBoost"])
 
             if st.button("🚀 Обучить модель"):
                 if model_choice == "Логистическая регрессия":
@@ -105,11 +103,11 @@ def analysis_and_model_page():
             st.subheader("🔮 Предсказание по новым данным")
             with st.form("prediction_form"):
                 product_type = st.selectbox("Тип продукта (L, M, H)", ['L', 'M', 'H'])
-                air_temp = st.number_input("Температура окружающей среды [K]", value=300.0)
-                process_temp = st.number_input("Температура процесса [K]", value=310.0)
-                rotational_speed = st.number_input("Скорость вращения [rpm]", value=1500)
-                torque = st.number_input("Крутящий момент [Nm]", value=40.0)
-                tool_wear = st.number_input("Износ инструмента [мин]", value=50)
+                air_temp = st.number_input("Температура окружающей среды [K]", value=120.0)
+                process_temp = st.number_input("Температура процесса [K]", value=409.0)
+                rotational_speed = st.number_input("Скорость вращения [rpm]", value=1000)
+                torque = st.number_input("Крутящий момент [Nm]", value=69.0)
+                tool_wear = st.number_input("Износ инструмента [мин]", value=500)
 
                 submitted = st.form_submit_button("Предсказать")
 

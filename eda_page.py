@@ -1,3 +1,4 @@
+# eda_page.py
 import streamlit as st
 import pandas as pd
 import seaborn as sns
@@ -11,6 +12,10 @@ def eda_page():
     if uploaded_file is not None:
         try:
             df = pd.read_csv(uploaded_file) 
+            
+            # Очистка названий колонок (удаляем квадратные скобки)
+            df.columns = [col.replace('[', '').replace(']', '') for col in df.columns]
+            
             st.success("Данные успешно загружены.")
             
             st.subheader("Первые строки датасета")
@@ -18,9 +23,10 @@ def eda_page():
             
             st.subheader("Основные статистики")
             st.write(df.describe())
+            
             st.subheader("Гистограммы распределения числовых признаков")
-            numerical_cols = ['Air temperature [K]', 'Process temperature [K]',
-                              'Rotational speed [rpm]', 'Torque [Nm]', 'Tool wear [min]']
+            numerical_cols = ['Air temperature K', 'Process temperature K',
+                            'Rotational speed rpm', 'Torque Nm', 'Tool wear min']
             for col in numerical_cols:
                 fig, ax = plt.subplots()
                 sns.histplot(df[col], kde=True, ax=ax)
@@ -63,7 +69,7 @@ def eda_page():
             # Зависимость отказов от Tool wear
             st.subheader("Зависимость отказов от износа инструмента")
             fig, ax = plt.subplots()
-            sns.boxplot(x='Machine failure', y='Tool wear [min]', data=df, ax=ax)
+            sns.boxplot(x='Machine failure', y='Tool wear min', data=df, ax=ax)
             ax.set_xticklabels(['Без отказа', 'Отказ'])
             st.pyplot(fig)
 
